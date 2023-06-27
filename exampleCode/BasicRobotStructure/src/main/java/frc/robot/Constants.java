@@ -15,6 +15,6 @@ package frc.robot;
 public final class Constants {
 
     public static final double kCountsPerRevolution = 1440.0;
-    public static final double kWheelDiameterInch = 2.75591; // 70 mm
+    public static final double kWheelDiameterMeters = 0.07; // 2.75591 inches; 70 mm
 
 }
