@@ -6,9 +6,10 @@ package frc.robot.sensors;
 
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDevice.Direction;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.hal.SimDouble;
 
-public class RomiGyro {
+public class RomiGyro implements Gyro {
   private final SimDouble m_simRateX;
   private final SimDouble m_simRateY;
   private final SimDouble m_simRateZ;
@@ -19,6 +20,8 @@ public class RomiGyro {
   private double m_angleXOffset;
   private double m_angleYOffset;
   private double m_angleZOffset;
+
+  private SimDevice m_gyroSimDevice;
 
   /** Create a new RomiGyro. */
   public RomiGyro() {
@@ -128,5 +131,27 @@ public class RomiGyro {
       m_angleYOffset = m_simAngleY.get();
       m_angleZOffset = m_simAngleZ.get();
     }
+  }
+
+  @Override
+  public void close() throws Exception {
+  if (m_gyroSimDevice != null) {
+    m_gyroSimDevice.close();
+  }
+  }
+
+  @Override
+  public void calibrate() {
+    // no-op
+  }
+
+  @Override
+  public double getAngle() {
+    return getAngleZ();
+  }
+
+  @Override
+  public double getRate() {
+    return getRateZ();
   }
 }
