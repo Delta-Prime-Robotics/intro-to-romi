@@ -58,14 +58,24 @@ public class Drivetrain extends SubsystemBase {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
 
-  // -----------------------------------------------------------
-  // System State
-  // -----------------------------------------------------------
-
   public void resetEncoders() {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
   }
+
+  /** Reset the heading. */
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+
+  /** Reset the gyro. */
+  public void resetGyro() {
+    m_gyro.reset();
+  }
+
+  // -----------------------------------------------------------
+  // System State
+  // -----------------------------------------------------------
 
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
@@ -148,16 +158,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public double getHeading() {
     return m_gyro.getRotation2d().getDegrees();
-  }
-
-  /** Reset the heading. */
-  public void zeroHeading() {
-    m_gyro.reset();
-  }
-
-  /** Reset the gyro. */
-  public void resetGyro() {
-    m_gyro.reset();
   }
 
   // -----------------------------------------------------------
