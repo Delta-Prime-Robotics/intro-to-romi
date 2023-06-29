@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -51,6 +54,12 @@ public class Drivetrain extends SubsystemBase {
 
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
 
+  // Odometry class for tracking robot pose
+  private final DifferentialDriveOdometry m_odometry;
+
+  // Show a field diagram for tracking odometry
+  private final Field2d m_field2d = new Field2d();
+
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     // We need to invert one side of the drivetrain so that positive voltages
@@ -62,6 +71,13 @@ public class Drivetrain extends SubsystemBase {
     m_leftEncoder.setDistancePerPulse((Math.PI * Constants.kWheelDiameterMeters) / Constants.kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * Constants.kWheelDiameterMeters) / Constants.kCountsPerRevolution);
     resetEncoders();
+
+    Pose2d initialPose = new Pose2d(0, 0, m_gyro.getRotation2d()); 
+    m_field2d.setRobotPose(initialPose);
+
+    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), 
+                  getLeftDistanceMeters(), getRightDistanceMeters(), 
+                  initialPose);
 
     setupShuffleboard();
   }
@@ -114,6 +130,16 @@ public class Drivetrain extends SubsystemBase {
   /** Reset the gyro. */
   public void resetGyro() {
     m_gyro.reset();
+  }
+
+  /** Reset odometry */
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    resetGyro();
+    
+    m_odometry.resetPosition(m_gyro.getRotation2d(),
+        getLeftDistanceMeters(), getRightDistanceMeters(),
+        m_field2d.getRobotPose());
   }
 
   // -----------------------------------------------------------
@@ -215,6 +241,13 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     publishTelemetry();
+
+    // Update the odometry in the periodic block
+    Pose2d currentPose = m_odometry.update(m_gyro.getRotation2d(), 
+        m_leftEncoder.getDistance(), 
+        m_rightEncoder.getDistance());
+
+    m_field2d.setRobotPose(currentPose);
   }
 
   /**
