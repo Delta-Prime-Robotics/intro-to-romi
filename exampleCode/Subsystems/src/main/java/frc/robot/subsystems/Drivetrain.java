@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
 
+  // -----------------------------------------------------------
+  // Initialization
+  // -----------------------------------------------------------
+
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
   private final Spark m_leftMotor = new Spark(0);
@@ -46,9 +50,17 @@ public class Drivetrain extends SubsystemBase {
     resetEncoders();
   }
 
+  // -----------------------------------------------------------
+  // Control Input
+  // -----------------------------------------------------------
+
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
   }
+
+  // -----------------------------------------------------------
+  // System State
+  // -----------------------------------------------------------
 
   public void resetEncoders() {
     m_leftEncoder.reset();
@@ -147,6 +159,10 @@ public class Drivetrain extends SubsystemBase {
   public void resetGyro() {
     m_gyro.reset();
   }
+
+  // -----------------------------------------------------------
+  // Process Logic
+  // -----------------------------------------------------------
 
   @Override
   public void periodic() {
