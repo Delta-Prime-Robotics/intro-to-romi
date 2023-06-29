@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants;
 import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -167,5 +168,18 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    publishTelemetry();
   }
+
+  /**
+   * Publish info about the drivetrain state to the SmartDashboard
+   */
+  public void publishTelemetry() {
+
+      // Display the meters per/second for each wheel and the heading
+      SmartDashboard.putNumber("Left Wheel Speed", m_leftEncoder.getRate());
+      SmartDashboard.putNumber("Right Wheel Speed", m_rightEncoder.getRate());
+      SmartDashboard.putNumber("Heading", getHeading());
+  }
+
 }
