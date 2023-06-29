@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
@@ -46,6 +48,8 @@ public class Drivetrain extends SubsystemBase {
   GenericEntry m_leftWheelPositionEntry;
   GenericEntry m_rightWheelPositionEntry;
   GenericEntry m_avgDistanceEntry;
+
+  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
@@ -115,6 +119,10 @@ public class Drivetrain extends SubsystemBase {
   // -----------------------------------------------------------
   // System State
   // -----------------------------------------------------------
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
+  }
 
   public int getLeftEncoderCount() {
     return m_leftEncoder.get();
@@ -215,8 +223,9 @@ public class Drivetrain extends SubsystemBase {
   public void publishTelemetry() {
 
       // Display the meters per/second for each wheel and the heading
-      SmartDashboard.putNumber("Left Wheel Speed", m_leftEncoder.getRate());
-      SmartDashboard.putNumber("Right Wheel Speed", m_rightEncoder.getRate());
+      DifferentialDriveWheelSpeeds wheelSpeeds = getWheelSpeeds();
+      SmartDashboard.putNumber("Left wheel speed", wheelSpeeds.leftMetersPerSecond);
+      SmartDashboard.putNumber("Right wheel speed", wheelSpeeds.leftMetersPerSecond);
       SmartDashboard.putNumber("Heading", getHeading());
 
       m_headingEntry.setDouble(getHeading());
