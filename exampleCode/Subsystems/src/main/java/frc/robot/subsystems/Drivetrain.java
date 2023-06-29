@@ -129,6 +129,20 @@ public class Drivetrain extends SubsystemBase {
     return m_gyro.getAngleZ();
   }
 
+  /**
+   * Current heading of the Romi
+   * 
+   * @return the current heading of the Romi in degrees
+   */
+  public double getHeading() {
+    return m_gyro.getRotation2d().getDegrees();
+  }
+
+  /** Reset the heading. */
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+
   /** Reset the gyro. */
   public void resetGyro() {
     m_gyro.reset();
